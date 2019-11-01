@@ -27,7 +27,7 @@ message BodyParam {
 }
 
 message SimpleValue {
-    oneof res {
+    oneof value {
         string stringValue = 1;
         int32 int32Value = 2;
         int64 int64Value = 3;
