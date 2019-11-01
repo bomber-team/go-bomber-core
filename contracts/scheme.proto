@@ -5,42 +5,63 @@ package bomber.contracts;
 option java_package = "org.bomber.contracts";
 option go_package = "github.com/bomber-team/rest-bomber/contracts";
 
-message Scheme {
-    int32 idScheme = 1;
-    Headers headers = 2;
-    repeated Request request = 3;
-    repeated Request body = 4;
+message RestSchema {
+    string id = 1;
+    map<string, string> pathVariables = 2;
+    map<string, string> headers = 3;
+    repeated RequestParam request = 4;
+    repeated BodyParam body = 5;
 }
 
-message Headers {
-    string method = 1;
-    string auth = 2;
-    string contentType = 3;
-    CorsType corsType = 4;
-}
-
-enum CorsType {
-    NOCORS = 0;
-    CORS = 1;
-}
-
-message Request {
+message BodyParam {
     string name = 1;
-    bool generator_need = 2;
-    oneof result {
-        string value = 3;
-        Request inlineRequest = 4;
+    BodyParamType type = 2;
+    bool isGenerated = 3;
+    GeneratorType generatorType = 4;
+    GeneratorConfig config = 5;
+    oneof value {
+        SimpleValue simpleProperty = 6;
+        ListProperty listProperty = 7;
+        ObjectProperty properties = 8;
     }
-    Generator generator = 5;
+}
+
+message SimpleValue {
+    oneof res {
+        string stringValue = 1;
+        int32 int32Value = 2;
+        int64 int64Value = 3;
+    }
+}
+
+message ListProperty {
+    repeated SimpleValue value = 1;
+}
+
+message ObjectProperty {
+    map<string, BodyParam> properties = 1;
+}
+
+enum BodyParamType {
+    SIMPLE_PROPERTY = 0;
+    LIST = 1;
+    OBJECT = 2;
+}
+
+message RequestParam {
+    string name = 1;
+    bool isGeneratorNeed = 2;
+    string value = 3;
+    GeneratorType generator = 5;
     GeneratorConfig generatorConfig = 6;
 }
 
-enum Generator {
-    WORDGENERATOR = 0;
-    PASSWORDGENERATOR = 1;
-    IPGENERATOR = 2;
-    MACGENERATOR = 3;
-    REGEXPGENERATOR = 4;
+enum GeneratorType {
+    WORD_GENERATOR = 0;
+    PASSWORD_GENERATOR = 1;
+    IP_GENERATOR = 2;
+    MAC_GENERATOR = 3;
+    REGEXP_GENERATOR = 4;
 }
 
 message GeneratorConfig {
@@ -58,7 +79,6 @@ message Section {
 }
 
 message IpGeneratorConfig {
-
     Section firstSection = 1;
     Section secondSection = 2;
     Section thirdSection = 3;

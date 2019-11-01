@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package bomber.contracts;
+
+option java_package = "org.bomber.contracts";
+option go_package = "github.com/bomber-team/rest-bomber/contracts";
+
+message RestScriptPipeline {
+    string id = 1;
+    repeated RestScript stages = 2;
+    RestPipelineConfiguration configuration = 3;
+}
+
+message RestScript {
+    string schemeId = 1;
+    string name = 2;
+    string address = 3;
+    string requestMethod = 4;
+    RestConfiguration configuration = 5;
+}
+
+message RestConfiguration {
+    int64 amountRequests = 1;
+    int64 timeoutForOneRequest = 2; // in seconds
+    int64 timeBetweenAttacks = 3;
+    bool notifyAfterCompleted = 4;
+    bool sendMetrics = 5;
+    bool logging = 6;
+    bool useGeneratedCache = 7;
+}
+
+message RestPipelineConfiguration {
+    int32 replay = 1;
+    bool replayAfterFailed = 2;
+    int64 replayAfterTimeout = 3;
+}
