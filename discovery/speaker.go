@@ -3,6 +3,8 @@ package discovery
 import (
 	"net"
 	"time"
+
+	"github.com/go-akka/configuration"
 )
 
 /*Speaker - producer packets for discovered by main backend service on multicast listen*/
@@ -11,6 +13,20 @@ type Speaker struct {
 	Packet          []byte
 	Address         string
 	MaxDatagramSize int32
+}
+
+const (
+	timeoutField = "timeout"
+)
+
+func NewSpeaker(config *configuration.Config) *Speaker {
+	res := &Speaker{}
+	res.parsingParamsFromConfig(config)
+}
+
+func (speak *Speaker) parsingParamsFromConfig(config *configuration.Config) error {
+	speak.Timeout = configuration_core.TryParsingNumbers(config, timeoutField)
+
 }
 
 func (speak *Speaker) RunEcho() error {
